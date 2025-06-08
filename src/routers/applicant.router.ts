@@ -16,12 +16,12 @@ router.post('/',uploadMultiple('file', cloudinary) ,async(req: Request, res:Resp
 
         const videoUrl = video.url || null
         const imageUrl = image.url || null
-        
+
         await applicant.create({
             fullName,
             stageName,
             email,
-            location, 
+            location,
             dateOfBirth,
             phoneNumber,
             category,

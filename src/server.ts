@@ -5,7 +5,6 @@ import cors from 'cors'
 import categoryRes from './routers/category.router'
 import eventRes from './routers/event.router'
 import applicantRes from './routers/applicant.router'
-
 const app = express()
 app.use(express.json())
 app.use(cors({

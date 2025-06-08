@@ -8,9 +8,9 @@ interface applicantProps {
     dateOfBirth: Date,
     phoneNumber: number,
     category: string,
-    image: string,
+    profilePicture: string,
     youtubeUrl?: string,
-    video: string,
+    videoFile: string,
     about: string
 }
 
@@ -22,9 +22,9 @@ const applicantSchema =  new Schema<applicantProps>({
     dateOfBirth:{type:Date,required: true},
     phoneNumber:{type:Number,required: true},
     category:{type:String,required: true},
-    image:{type:String,required: true},
+    profilePicture:{type:String,required: true},
     youtubeUrl:{type:String, required: false },
-    video:{type:String, required: true },
+    videoFile:{type:String, required: true },
     about:{type:String, required: true },
 })
 

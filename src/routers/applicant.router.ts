@@ -10,12 +10,12 @@ router.post('/',uploadMultiple('file', cloudinary) ,async(req: Request, res:Resp
     try {
         const {fullName,stageName,email,location,dateOfBirth,phoneNumber,category,youtubeUrl,about} = req.body
         // @ts-ignore
-        const video = req.body.file.find(f=>f.url)
+        const videoFile = req.body.file.find(f=>f.url)
         // @ts-ignore
-        const image = req.body.file.find(f => f.url)
+        const profilePicture = req.body.file.find(f => f.url)
 
-        const videoUrl = video.url || null
-        const imageUrl = image.url || null
+        const videoUrl = videoFile.url || null
+        const imageUrl = profilePicture.url || null
 
         await applicant.create({
             fullName,
@@ -27,8 +27,8 @@ router.post('/',uploadMultiple('file', cloudinary) ,async(req: Request, res:Resp
             category,
             youtubeUrl,
             about,
-            video: videoUrl,
-            image:imageUrl
+            videoFile: videoUrl,
+            profilePicture:imageUrl
         })
         res.status(201).json({message:'Application is submitted'})
     } catch (error: any) {

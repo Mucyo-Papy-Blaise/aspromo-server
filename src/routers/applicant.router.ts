@@ -3,16 +3,16 @@ import cloudinary from '../config/cloudinary'
 import { uploadMultiple } from 'rod-fileupload'
 import applicant from '../models/applicant.model'
 
-const router = express()
+const router = express.Router()
 router.use(express.json())
 
 router.post('/',uploadMultiple('file', cloudinary) ,async(req: Request, res:Response)=>{
     try {
-        const {fullName,stageName,email,location,dateOfBirth,phoneNumber,category,youtubeUrl,about} = req.body
+        const {fullName,stageName,email,location,dateOfBirth,phone,category,youtubeUrl,about} = req.body
         // @ts-ignore
-        const videoFile = req.body.file.find(f=>f.url)
+        const videoFile = req.body.file.find(f=>f.type === 'video')
         // @ts-ignore
-        const profilePicture = req.body.file.find(f => f.url)
+        const profilePicture = req.body.file.find(f=> f.type === 'image')
 
         const videoUrl = videoFile.url || null
         const imageUrl = profilePicture.url || null
@@ -23,7 +23,7 @@ router.post('/',uploadMultiple('file', cloudinary) ,async(req: Request, res:Resp
             email,
             location,
             dateOfBirth,
-            phoneNumber,
+            phone,
             category,
             youtubeUrl,
             about,
@@ -44,6 +44,32 @@ router.get('/', async(req:Request, res:Response)=>{
         res.status(500).json({message:'Failed to get Fetch Applicants Data', error:error.message})
     }
 })
+
+router.get('/count', async(req:Request, res:Response)=>{
+    try {
+        const totalApplicants = await applicant.countDocuments()
+        res.status(201).json(totalApplicants)
+    } catch (error) {
+        res.status(500).json({message:"Failed to count total Participant"})
+    }
+})
+
+router.get('/category-counts', async(req:Request, res:Response)=>{
+    try {
+        const categoryCounts = await applicant.aggregate([
+            {
+                $group: {
+                    _id: "$category",
+                    count: {$sum: 1}
+                }
+            }
+        ])
+        res.status(201).json(categoryCounts)
+    } catch (error: any) {
+       res.status(500).json({message:'Failed to Counts Applicants according to their category', error:error.message}) 
+    }
+})
+
 router.get('/:id', async(req: Request, res:Response)=>{
     try {
         const {id} = req.params

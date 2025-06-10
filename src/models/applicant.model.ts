@@ -11,7 +11,8 @@ interface applicantProps {
     profilePicture: string,
     youtubeUrl?: string,
     videoFile: string,
-    about: string
+    about: string,
+    votes:number
 }
 
 const applicantSchema =  new Schema<applicantProps>({
@@ -26,6 +27,8 @@ const applicantSchema =  new Schema<applicantProps>({
     youtubeUrl:{type:String, required: false },
     videoFile:{type:String, required: true },
     about:{type:String, required: true },
+    votes:{type:Number, required: true, default:0 },
+
 })
 
 const applicant = mongoose.model('applicants', applicantSchema)

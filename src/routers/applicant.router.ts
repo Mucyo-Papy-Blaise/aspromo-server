@@ -1,93 +1,21 @@
-import express,{Request, Response} from 'express'
+import express from 'express'
 import cloudinary from '../config/cloudinary'
 import { uploadMultiple } from 'rod-fileupload'
-import applicant from '../models/applicant.model'
+import applicantController from '../controllers/applicant.controller'
 
 const router = express.Router()
 router.use(express.json())
 
-router.post('/',uploadMultiple('file', cloudinary) ,async(req: Request, res:Response)=>{
-    try {
-        const {fullName,stageName,email,location,dateOfBirth,phone,category,youtubeUrl,about} = req.body
-        // @ts-ignore
-        const videoFile = req.body.file.find(f=>f.type === 'video')
-        // @ts-ignore
-        const profilePicture = req.body.file.find(f=> f.type === 'image')
+router.post('/',uploadMultiple('file', cloudinary) , applicantController.postApplicant)
 
-        const videoUrl = videoFile.url || null
-        const imageUrl = profilePicture.url || null
+router.get('/', applicantController.getApplicant)
 
-        await applicant.create({
-            fullName,
-            stageName,
-            email,
-            location,
-            dateOfBirth,
-            phone,
-            category,
-            youtubeUrl,
-            about,
-            videoFile: videoUrl,
-            profilePicture:imageUrl
-        })
-        res.status(201).json({message:'Application is submitted'})
-    } catch (error: any) {
-        res.status(500).json({message:'Application Failed', error:error.message})
-    }
-})
+router.get('/count', applicantController.getTotalApplicant)
 
-router.get('/', async(req:Request, res:Response)=>{
-    try {
-        const applicants =  await applicant.find()
-        res.status(201).json(applicants)
-    } catch (error: any) {
-        res.status(500).json({message:'Failed to get Fetch Applicants Data', error:error.message})
-    }
-})
+router.get('/category-counts', applicantController.getApplicantCategoryCounts)
 
-router.get('/count', async(req:Request, res:Response)=>{
-    try {
-        const totalApplicants = await applicant.countDocuments()
-        res.status(201).json(totalApplicants)
-    } catch (error) {
-        res.status(500).json({message:"Failed to count total Participant"})
-    }
-})
+router.get('/:id', applicantController.getApplicantById)
 
-router.get('/category-counts', async(req:Request, res:Response)=>{
-    try {
-        const categoryCounts = await applicant.aggregate([
-            {
-                $group: {
-                    _id: "$category",
-                    count: {$sum: 1}
-                }
-            }
-        ])
-        res.status(201).json(categoryCounts)
-    } catch (error: any) {
-       res.status(500).json({message:'Failed to Counts Applicants according to their category', error:error.message}) 
-    }
-})
-
-router.get('/:id', async(req: Request, res:Response)=>{
-    try {
-        const {id} = req.params
-        const applicants = await applicant.findById({_id: id})
-        res.status(201).json(applicants)
-    } catch (error:any) {
-        res.status(500).json({message:'Failed to Fetch Applicants data', error:error.message})
-    }
-})
-
-router.delete('/:id',async(req: Request, res:Response)=>{
-    try {
-        const {id} = req.params
-        await applicant.findOneAndDelete({_id: id})
-        res.status(201).json({message:"Applicant deleted!"})
-    } catch (error: any) {
-        res.status(500).json({message:'Failed to delete Applicant!', error:error.message})
-    }
-})
+router.delete('/:id', applicantController.deleteApplicant)
 
 export default router

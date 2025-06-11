@@ -38,6 +38,22 @@ class categoryController {
       res.status(500).json({ message: "Failed to delete Category" });
     }
   };
+
+  static updateStatus = async(req: Request, res:Response)=>{
+    try {
+      const {id} = req.params
+      const {status} =  req.body
+      const updatedCategory = await category.findOneAndUpdate({_id: id},{status},{new: true})
+
+    if(!updatedCategory){
+      res.status(400).json({message:"The category not found"})
+      return
+    }
+    res.status(201).json({ message: "Status updated", updatedCategory })
+    } catch (error: any) {
+      res.status(500).json({message:"Failed to Update Category Status", error:error.message})
+    }
+  }
 }
 
 export default categoryController;

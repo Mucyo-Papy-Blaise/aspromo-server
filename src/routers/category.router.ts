@@ -5,11 +5,9 @@ import categoryController from '../controllers/category.controller'
 
 const router = express()
 router.use(express.json())
-
 router.post('/',uploadSingle('image',cloudinary), categoryController.postCatgory)
-
 router.get('/', categoryController.getCategory)
-
 router.delete('/', categoryController.deleteCategory)
+router.put('/:id', categoryController.updateStatus)
 
 export default router

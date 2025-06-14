@@ -45,7 +45,6 @@ class categoryController {
 
   static updateStatus = async(req: Request, res:Response)=>{
     try {
-      console.log(req.body)
       const {id} = req.params
       const {status} =  req.body
       const updatedCategory = await category.findOneAndUpdate({_id: id},{status},{new: true})
@@ -63,10 +62,11 @@ class categoryController {
   static updateCategory =async(req:Request , res:Response)=>{
     try {
       const {id} = req.params
-      const {categoryName,description,status} = req.body
-      const updatedCategory = await category.findOneAndUpdate({_id:id},{categoryName,description,status})
+      const {categoryName,description,status,image} = req.body
+      const updatedCategory = await category.findByIdAndUpdate(id,{categoryName,description,status,image},{new: true})
+
       if(!updatedCategory){
-        res.status(401).json({message:'No Category found'})
+        res.status(404).json({message:'No Category found'})
       }
       res.status(201).json({message:'Categoy Updated', updatedCategory})
     } catch (error: any) {

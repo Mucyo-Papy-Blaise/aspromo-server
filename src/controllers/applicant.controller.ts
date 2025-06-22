@@ -15,6 +15,8 @@ class applicantController {
         category,
         youtubeUrl,
         about,
+        appliedAt,
+        approvedAt,
       } = req.body;
       // @ts-ignore
       const videoFile = req.body.file.find((f) => f.type === "video");
@@ -23,7 +25,7 @@ class applicantController {
 
       const videoUrl = videoFile.url || null;
       const imageUrl = profilePicture.url || null;
-
+      
       await applicant.create({
         fullName,
         stageName,
@@ -36,6 +38,8 @@ class applicantController {
         about,
         videoFile: videoUrl,
         profilePicture: imageUrl,
+        appliedAt,
+        approvedAt,
       });
       res.status(201).json({ message: "Application is submitted" });
     } catch (error: any) {
@@ -130,5 +134,27 @@ class applicantController {
       res.status(500).json({ message: "error voting", error: error.message });
     }
   };
+
+  static changeStatus = async(req:Request, res:Response)=>{
+    try {
+      const {id} =  req.params
+      const {status} = req.body
+      const updateFiled: any = {status}
+
+      if(status === "Approved"){
+        updateFiled.approvedAt = new Date() 
+        updateFiled.isApproved = true
+      }
+
+      if(status === "Rejected"){
+        updateFiled.approvedAt = new Date() 
+      }
+
+      const changedApplicant = await applicant.findByIdAndUpdate(id,updateFiled,{new: true})
+      res.status(200).json(changedApplicant)
+    } catch (error) {
+      res.status(500).json({message:"Failed to update Applicant Status"})
+    }
+  }
 }
 export default applicantController;

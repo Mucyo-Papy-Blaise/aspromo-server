@@ -4,22 +4,23 @@ class EventController{
 
   static postEvent = async (req: Request, res: Response) => {
     try {
-      const { eventTitle, category, description, startDate, endDate } =
+      const { eventTitle, description, startDate,status,applicants, endDate } =
         req.body;
 
       const videoUrls = req.body.videos.map((f: any) => f.url);
       console.log(videoUrls);
       await events.create({
         eventTitle,
-        category,
         description,
         startDate: new Date(startDate),
         endDate: new Date(endDate),
+        status,
+        applicants,
         videos: videoUrls,
       });
       res.status(201).json({ message: "Event Created Succesffully!" });
     } catch (error) {
-      res.status(500).json({ message: "Failed to create Event" });
+      res.status(500).json({ message: "Failed to create Event" ,error});
     }
   }
   

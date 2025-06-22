@@ -1,5 +1,6 @@
 import express from 'express'
 import env from './config/env'
+import './cron/eventStatusUpdater';
 import connectdb from './config/dbconnect'
 import cors from 'cors'
 import categoryRes from './routers/category.router'
@@ -11,7 +12,7 @@ const app = express()
 app.use(express.json())
 
 app.use(cors({
-    origin: ['http://localhost:3000'],
+    origin: ['http://localhost:3000',"http://localhost:3001"],
     methods:["POST","GET","PUT","PATCH","DELETE","OPTIONS"]
 }))
 

@@ -1,14 +1,7 @@
 import mongoose, { Schema } from "mongoose";
+import { testimonilaTypes } from "../Types/types";
 
-interface ITestimonila {
-    image: string,
-    name: string,
-    category: string,
-    speech: string,
-    year: Date
-}
-
-const testimonialSchema = new Schema<ITestimonila>({
+const testimonialSchema = new Schema<testimonilaTypes>({
     image:{type: String, required: false},
     name: {type: String, required: true},
     category:{type: String, required: true},

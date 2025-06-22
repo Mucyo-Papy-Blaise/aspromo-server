@@ -1,20 +1,13 @@
 import mongoose, { Schema } from "mongoose";
+import { eventTypes } from "../Types/types";
 
-interface eventProps{
-    eventTitle: string,
-    category: string,
-    description: string
-    startDate: Date,
-    endDate: Date,
-    videos: string[]
-}
-
-const eventSchema = new Schema<eventProps>({
+const eventSchema = new Schema<eventTypes>({
     eventTitle:{type:String, required: true},
-    category:{type: String, required: true},
     description:{type: String, required: true},
     startDate:{type:Date, required: true},
     endDate:{type:Date, required: true},
+    status:{type: String,enum:["Active", "Ended"],required: true, default:"Active"},
+    applicants:{type: Number, required: true, default:0},
     videos:{type:[String], required: true},
 })
 

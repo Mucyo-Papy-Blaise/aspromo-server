@@ -1,21 +1,7 @@
 import mongoose, { Schema } from "mongoose"
+import { applicantTypes } from "../Types/types"
 
-interface applicantProps {
-    fullName: string,
-    stageName: string,
-    email:string,
-    location: string,
-    dateOfBirth: Date,
-    phone: number,
-    category: string,
-    profilePicture: string,
-    youtubeUrl?: string,
-    videoFile: string,
-    about: string,
-    votes:number
-}
-
-const applicantSchema =  new Schema<applicantProps>({
+const applicantSchema =  new Schema<applicantTypes>({
     fullName:{type:String,required: true},
     stageName:{type:String,required: true},
     email:{type:String,required: true},
@@ -28,6 +14,10 @@ const applicantSchema =  new Schema<applicantProps>({
     videoFile:{type:String, required: true },
     about:{type:String, required: true },
     votes:{type:Number, required: true, default:0 },
+    appliedAt: {type: Date, default: Date.now},
+    approvedAt: {type: Date, default:null},
+    isApproved: {type:Boolean, default: false},
+    status: {type: String, enum:["Pending" ,"Aproved" ,"Rejected"], default: "Pending"}
 
 })
 

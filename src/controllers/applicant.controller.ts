@@ -4,6 +4,9 @@ import applicant from "../models/applicant.model";
 import { generateOTP, gotOTPExpired } from "../utils/otpGenerator";
 import { sendOTPEmail } from "../utils/mailer";
 
+// Global OTP store - in production, use Redis or database
+const otpStore = new Map();
+
 class applicantController {
   static postApplicant = async (req: Request, res: Response) => {
     try {
@@ -51,46 +54,72 @@ class applicantController {
     }
   };
 
-  static generateOTP =async(req: Request, res:Response)=>{
+  static generateOTP = async(req: Request, res:Response)=>{
     try {
      const { email } = req.body
-     const user = await applicant.findOne(email)
-
-     if(!user){
-      return res.status(4004).json({message:"Email not found"})
+     
+     if(!email || !email.includes('@')){
+      return res.status(400).json({message:"Invalid Email"})
      }
 
-     if(!email.includes('@')){
-      res.status(400).json({message:"Invalid Email"})
+     const user = await applicant.findOne({email})
+
+     if(!user){
+      return res.status(404).json({message:"Email not found"})
      }
 
      const otp = generateOTP()
      const expiresAt = gotOTPExpired(5)
-
-     const otpStore = new Map()
+     // Store OTP in the global map
      otpStore.set(email, { otp, expiresAt });
      
-     res.status(200).json({message:"OTP Generated successfully!"})
+     // Send OTP via email
+     try {
+       await sendOTPEmail(email, otp);
+       res.status(200).json({message:"OTP sent successfully to your email!"})
+     } catch (emailError) {;
+       res.status(500).json({message:"OTP generated but failed to send email. Please check your email configuration."})
+     }
 
     } catch (error: any) {
       res.status(500).json({message: `Error occurred: ${error.message}`})
     }
   }
 
-  static verifyOTP =async(req: Request, res:Response)=>{
-    const [email, otp] = req.body
-    const otpStore = new Map()
-    const record = otpStore.get(email)
+  static verifyOTP = async(req: Request, res:Response)=>{
+    try {
+      const { email, otp } = req.body
+      const user =  await applicant.findOne({email})
+      
+      if(!user){
+        return res.status(400).json({ message: "Applicant not found" })
+      }
 
-    if(!record || !record.otp !== otp){
-      return res.status(400).json({ message: 'Invalid or expired OTP' })
-    }
+      if(!email || !otp) {
+        return res.status(400).json({ message: 'Email and OTP are required' })
+      }
 
-    if(Date.now() > record.expiresAt){
-      return res.status(400).json({ message: 'OTP expired' });
+      const record = otpStore.get(email)
+
+      if(!record) {
+        return res.status(400).json({ message: 'No OTP found for this email' })
+      }
+
+      if(Date.now() > record.expiresAt){
+        otpStore.delete(email);
+        return res.status(400).json({ message: 'OTP expired' });
+      }
+
+      if(record.otp !== otp){
+        return res.status(400).json({ message: 'Invalid OTP' })
+      }
+
+      // OTP is valid
+      otpStore.delete(email);
+      return res.status(200).json({ message: 'OTP verified successfully' ,applicant: user});
+    } catch (error: any) {
+      res.status(500).json({message: `Error occurred: ${error.message}`})
     }
-    otpStore.delete(email);
-    return res.status(200).json({ message: 'OTP verified' });
   }
 
   static getApplicant = async (req: Request, res: Response) => {

@@ -14,6 +14,10 @@ router.get('/category-counts', applicantController.getApplicantCategoryCounts)
 router.get('/:id', applicantController.getApplicantById)
 router.delete('/:id', applicantController.deleteApplicant)
 router.put('/updateStatus/:id', applicantController.changeStatus)
+// @ts-expect-error
+router.post('/generate-otp', applicantController.generateOTP)
+// @ts-expect-error
+router.post('/verify-otp', applicantController.verifyOTP)
 
 
 export default router

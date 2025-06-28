@@ -7,5 +7,6 @@ export const generateToken = (payload: string | object, expiresIn = '1h') => {
     throw new Error('JWT_SECRET is not defined in environment variables');
   }
 
-//   return jwt.sign(payload, secret, { expiresIn })
+  // @ts-expect-error
+  return jwt.sign(payload, secret, { expiresIn });
 };

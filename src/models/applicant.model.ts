@@ -17,7 +17,7 @@ const applicantSchema =  new Schema<applicantTypes>({
     appliedAt: {type: Date, default: Date.now},
     approvedAt: {type: Date, default:null},
     isApproved: {type:Boolean, default: false},
-    status: {type: String, enum:["Pending" ,"Aproved" ,"Rejected"], default: "Pending"}
+    status: {type: String, enum:["Pending" ,"Approved" ,"Rejected"], default: "Pending"}
 
 })
 

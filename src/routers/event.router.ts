@@ -11,4 +11,6 @@ router.post("/",uploadMultiple("videos", cloudinary), EventController.postEvent)
 router.get("/", EventController.getEvent);
 router.delete("/", EventController.deleteEvent);
 router.patch("/:id", EventController.patchEvent);
+router.get('/activeEvent', EventController.getActiveEvents)
+
 export default router;

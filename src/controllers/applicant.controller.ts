@@ -71,25 +71,26 @@ class applicantController {
   };
 
   static getApplicantCategoryCounts = async (req: Request, res: Response) => {
-    try {
-      const categoryCounts = await applicant.aggregate([
-        {
-          $group: {
-            _id: "$category",
-            count: { $sum: 1 },
-          },
-        },
-      ]);
-      res.status(201).json(categoryCounts);
-    } catch (error: any) {
-      res
-        .status(500)
-        .json({
-          message: "Failed to Counts Applicants according to their category",
-          error: error.message,
-        });
-    }
-  };
+  try {
+    const categoryCounts = await applicant.aggregate([
+      {
+        $group: {
+          _id: "$category",
+          count: { $sum: 1 }
+        }
+      },
+      {
+        $sort: { count: -1 }
+      }
+    ]);
+    res.status(200).json({categoryCounts});
+  } catch (error: any) {
+    res.status(500).json({
+      message: "Failed to count applicants by category",
+      error: error.message
+    });
+  }
+};
 
   static getApplicantById = async (req: Request, res: Response) => {
     try {
@@ -156,5 +157,18 @@ class applicantController {
       res.status(500).json({message:"Failed to update Applicant Status"})
     }
   }
+
+  static videosCounts = async (req: Request, res: Response) => {
+  try {
+    const counts = await applicant.countDocuments({
+      status: "Approved",
+      videoFile: { $exists: true, $ne: null }
+    });
+    res.status(200).json({ count: counts }); 
+  } catch (error: any) {
+    res.status(500).json({message: 'Failed to count approved Videos Uploaded',error: error.message});
+  }
+};
+
 }
 export default applicantController;

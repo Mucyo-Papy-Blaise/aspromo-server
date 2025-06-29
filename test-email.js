@@ -1,12 +1,6 @@
 require('dotenv').config();
 const nodemailer = require('nodemailer');
 
-console.log('Environment Variables Check:');
-console.log('MAIL_USER:', process.env.MAIL_USER ? 'SET' : 'NOT SET');
-console.log('MAIL_PASS:', process.env.MAIL_PASS ? 'SET' : 'NOT SET');
-console.log('MONGO_DB_URI:', process.env.MONGO_DB_URI ? 'SET' : 'NOT SET');
-console.log('PORT:', process.env.PORT || 'NOT SET');
-
 if (!process.env.MAIL_USER || !process.env.MAIL_PASS) {
     console.error('\n❌ Email configuration is missing!');
     console.error('Please create a .env file with the following variables:');

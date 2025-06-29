@@ -5,7 +5,7 @@ export interface applicantTypes {
     email:string,
     location: string,
     dateOfBirth: Date,
-    phone: number,
+    phone: number
     category: string,
     profilePicture: string,
     youtubeUrl?: string,

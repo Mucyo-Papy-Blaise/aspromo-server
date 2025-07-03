@@ -13,7 +13,7 @@ const isLogggedIn = async(req:any,res:Response,next:NextFunction)=>{
       next()
 
     } catch (error) {
-        
+        res.status(500).json({message:"Error while Login"})
     }
 }
 export default isLogggedIn

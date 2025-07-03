@@ -39,3 +39,10 @@ export interface testimonilaTypes {
     speech: string,
     year: Date
 }
+
+export interface adminTypes {
+    fullName: string,
+    email: string,
+    image: string,
+    password?: string,
+}

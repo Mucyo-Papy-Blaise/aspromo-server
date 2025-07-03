@@ -3,10 +3,11 @@ import env from './config/env'
 import './cron/eventStatusUpdater';
 import connectdb from './config/dbconnect'
 import cors from 'cors'
-import categoryRes from './routers/category.router'
-import eventRes from './routers/event.router'
-import applicantRes from './routers/applicant.router'
-import testimonialRes from './routers/testimonial.router'
+import categoryRes from './routers/category.route'
+import eventRes from './routers/event.route'
+import applicantRes from './routers/applicant.route'
+import testimonialRes from './routers/testimonial.route'
+import adminRes from './routers/admin.route'
 
 const app = express()
 app.use(express.json())
@@ -20,6 +21,7 @@ app.use('/category', categoryRes)
 app.use('/event',eventRes )
 app.use('/applicant', applicantRes)
 app.use('/testimonial', testimonialRes)
+app.use('/admin', adminRes)
 
 const PORT = env.port
 app.listen(PORT, async()=>{

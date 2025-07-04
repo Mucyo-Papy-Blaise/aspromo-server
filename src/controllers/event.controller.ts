@@ -57,5 +57,15 @@ class EventController{
   }
 }
 
+static getActiveEvents =async(req:Request, res:Response)=>{
+  try {
+    const status = "Active"
+    const counts = await events.countDocuments({status: status})
+
+    res.status(200).json(counts)
+  } catch (error) {
+    res.status(500).json('Failed to Fetch Total Active Event')
+  }
+}
 }
 export default EventController

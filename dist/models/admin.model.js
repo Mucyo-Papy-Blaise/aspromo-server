@@ -34,11 +34,11 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
-const categorySchema = new mongoose_1.Schema({
-    image: { type: String, required: true },
-    categoryName: { type: String, required: true },
-    description: { type: String, required: true },
-    status: { type: String, required: true }
+const adminSchema = new mongoose_1.Schema({
+    fullName: { type: String, required: true },
+    email: { type: String, required: true },
+    image: { type: String },
+    password: { type: String, required: true }
 });
-const category = mongoose_1.default.model('category', categorySchema);
-exports.default = category;
+const admins = mongoose_1.default.model('admins', adminSchema);
+exports.default = admins;

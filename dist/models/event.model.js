@@ -34,11 +34,14 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
-const categorySchema = new mongoose_1.Schema({
-    image: { type: String, required: true },
-    categoryName: { type: String, required: true },
+const eventSchema = new mongoose_1.Schema({
+    eventTitle: { type: String, required: true },
     description: { type: String, required: true },
-    status: { type: String, required: true }
+    startDate: { type: Date, required: true },
+    endDate: { type: Date, required: true },
+    status: { type: String, enum: ["Active", "Ended"], required: true, default: "Active" },
+    applicants: { type: Number, required: true, default: 0 },
+    videos: { type: [String], required: true },
 });
-const category = mongoose_1.default.model('category', categorySchema);
-exports.default = category;
+const events = mongoose_1.default.model('events', eventSchema);
+exports.default = events;

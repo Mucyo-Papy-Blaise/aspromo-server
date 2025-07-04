@@ -8,6 +8,10 @@ import eventRes from './routers/event.route'
 import applicantRes from './routers/applicant.route'
 import testimonialRes from './routers/testimonial.route'
 import adminRes from './routers/admin.route'
+import notificationsRes from './routers/notifications.route'
+import { startReminderCron } from './cron/reminder.Cron';
+
+startReminderCron()
 
 const app = express()
 app.use(express.json())
@@ -22,6 +26,7 @@ app.use('/event',eventRes )
 app.use('/applicant', applicantRes)
 app.use('/testimonial', testimonialRes)
 app.use('/admin', adminRes)
+app.use('/notifications', notificationsRes)
 
 const PORT = env.port
 app.listen(PORT, async()=>{

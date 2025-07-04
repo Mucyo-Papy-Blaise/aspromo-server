@@ -34,11 +34,23 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
-const categorySchema = new mongoose_1.Schema({
-    image: { type: String, required: true },
-    categoryName: { type: String, required: true },
-    description: { type: String, required: true },
-    status: { type: String, required: true }
+const applicantSchema = new mongoose_1.Schema({
+    fullName: { type: String, required: true },
+    stageName: { type: String, required: true },
+    email: { type: String, required: true },
+    location: { type: String, required: true },
+    dateOfBirth: { type: Date, required: true },
+    phone: { type: Number, required: true },
+    category: { type: String, required: true },
+    profilePicture: { type: String, required: true },
+    youtubeUrl: { type: String, required: false },
+    videoFile: { type: String, required: true },
+    about: { type: String, required: true },
+    votes: { type: Number, required: true, default: 0 },
+    appliedAt: { type: Date, default: Date.now },
+    approvedAt: { type: Date, default: null },
+    isApproved: { type: Boolean, default: false },
+    status: { type: String, enum: ["Pending", "Approved", "Rejected"], default: "Pending" }
 });
-const category = mongoose_1.default.model('category', categorySchema);
-exports.default = category;
+const applicant = mongoose_1.default.model('applicants', applicantSchema);
+exports.default = applicant;

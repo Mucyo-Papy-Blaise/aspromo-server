@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import admins from "../models/admin.model";
 import bcrypt from "bcrypt";
 import jwt,{JwtPayload} from 'jsonwebtoken'
+import notifications from "../models/notification.model";
+import applicant from "../models/applicant.model";
 
 class adminController {
   static adminRegistration = async (req: Request, res: Response) => {
@@ -13,6 +15,13 @@ class adminController {
         image: image.url,
         password: await bcrypt.hash(password, 10),
       });
+
+      const existing = await admins.findOne({email})
+
+      if(existing){
+        res.status(400).json({message:"Email Already exisisting!"})
+      }
+
       res.status(201).json({ message: "Registration succesfully!" });
     } catch (error: any) {
         res.status(500).json({message:"Failed to Register!", error:error.message})
@@ -36,7 +45,14 @@ class adminController {
       }
 
       const token  = jwt.sign({id:user._id},process.env.JWT_SECRET!,{expiresIn: '7d'})
-      res.status(200).json({message:"Login Sucessfully", token, name:user.fullName, email: user.email})
+      res.status(200).json({
+        message: "Login Sucessfully",
+        token,
+        name: user.fullName,
+        email: user.email,
+        id: user._id,
+        image: user.image
+      })
 
     } catch (error: any) {
       res.status(500).json({message:"Failed to Login", error:error.message})

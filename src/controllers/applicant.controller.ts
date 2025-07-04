@@ -3,6 +3,8 @@ import Applicant from "../models/applicant.model";
 import applicant from "../models/applicant.model";
 import { generateOTP, gotOTPExpired } from "../utils/otpGenerator";
 import { sendOTPEmail } from "../utils/mailer";
+import NotificationModel  from "../models/notification.model";
+import Admin from "../models/admin.model";
 
 // Global OTP store - in production, use Redis or database
 const otpStore = new Map();
@@ -46,6 +48,19 @@ class applicantController {
         appliedAt,
         approvedAt,
       });
+
+      // Notify Adims
+      const admins = await Admin.find();
+      await Promise.all(
+      admins.map((admin) =>
+        NotificationModel.create({
+          recipientId: admin._id,
+          recipientModel: "Admin",
+          message: `New applicant "${stageName}" has submitted their application.`,
+        })
+      )
+    );
+
       res.status(201).json({ message: "Application is submitted" });
     } catch (error: any) {
       res
@@ -207,27 +222,36 @@ class applicantController {
     }
   };
 
-  static changeStatus = async(req:Request, res:Response)=>{
-    try {
-      const {id} =  req.params
-      const {status} = req.body
-      const updateFiled: any = {status}
+  static changeStatus = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+    const updateFiled: any = { status };
 
-      if(status === "Approved"){
-        updateFiled.approvedAt = new Date() 
-        updateFiled.isApproved = true
+    if (status === "Approved") {
+      updateFiled.approvedAt = new Date();
+      updateFiled.isApproved = true;
+
+      const approvedApplicant = await applicant.findById(id);
+      if (approvedApplicant) {
+        await NotificationModel.create({
+          recipientId: approvedApplicant._id,
+          recipientModel: "Applicant",
+          message: `Congratulations ${approvedApplicant.stageName}, your application has been approved!`,
+        });
       }
-
-      if(status === "Rejected"){
-        updateFiled.approvedAt = new Date() 
-      }
-
-      const changedApplicant = await applicant.findByIdAndUpdate(id,updateFiled,{new: true})
-      res.status(200).json(changedApplicant)
-    } catch (error) {
-      res.status(500).json({message:"Failed to update Applicant Status"})
     }
+
+    if (status === "Rejected") {
+      updateFiled.approvedAt = new Date();
+    }
+
+    const changedApplicant = await applicant.findByIdAndUpdate(id, updateFiled, { new: true });
+    res.status(200).json(changedApplicant);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to update Applicant Status" });
   }
+};
 
   static videosCounts = async (req: Request, res: Response) => {
   try {

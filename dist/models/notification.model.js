@@ -34,11 +34,20 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
-const categorySchema = new mongoose_1.Schema({
-    image: { type: String, required: true },
-    categoryName: { type: String, required: true },
-    description: { type: String, required: true },
-    status: { type: String, required: true }
+const notificationSchema = new mongoose_1.Schema({
+    recipientId: {
+        type: mongoose_1.default.Schema.Types.ObjectId,
+        required: true,
+        refPath: "recipientModel",
+    },
+    recipientModel: {
+        type: String,
+        required: true,
+        enum: ["Admin", "Applicant"],
+    },
+    message: { type: String, required: true },
+    read: { type: Boolean, default: false },
+    createdAt: { type: Date, default: Date.now },
 });
-const category = mongoose_1.default.model('category', categorySchema);
-exports.default = category;
+const notifications = mongoose_1.default.model('notifications', notificationSchema);
+exports.default = notifications;

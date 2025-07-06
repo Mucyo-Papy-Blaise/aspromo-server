@@ -37,6 +37,7 @@ categoryController.postCatgory = (req, res) => __awaiter(void 0, void 0, void 0,
 categoryController.getCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const categories = yield category_models_1.default.find();
+        console.log(categories);
         res.status(201).json(categories);
     }
     catch (error) {

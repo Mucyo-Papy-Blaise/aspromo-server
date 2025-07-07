@@ -11,6 +11,10 @@ class adminController {
       const { fullName, image,email, password } = req.body;
       // Only create if not existing
       const existing = await admins.findOne({email})
+
+      if(existing){
+        res.status(401).json({message:"Email already exist!"})
+      }
       await admins.create({
         fullName,
         email,

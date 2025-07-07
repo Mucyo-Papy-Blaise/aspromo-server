@@ -22,6 +22,7 @@ class categoryController {
   static getCategory = async (req: Request, res: Response) => {
     try {
       const categories = await category.find();
+      console.log(categories)
       res.status(201).json(categories);
     } catch (error: any) {
       res

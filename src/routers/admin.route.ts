@@ -8,6 +8,6 @@ router.use(express.json())
 
 router.get('/', adminController.getLoggedInAdmin)
 router.post('/registration',uploadSingle('image', cloudinary),adminController.adminRegistration)
-router.post('/login',adminController.adminLogin)
+router.post('/login',adminController.adminLogin) 
 
 export default router

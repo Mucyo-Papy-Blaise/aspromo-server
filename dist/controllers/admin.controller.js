@@ -24,6 +24,9 @@ adminController.adminRegistration = (req, res) => __awaiter(void 0, void 0, void
         const { fullName, image, email, password } = req.body;
         // Only create if not existing
         const existing = yield admin_model_1.default.findOne({ email });
+        if (existing) {
+            res.status(401).json({ message: "Email already exist!" });
+        }
         yield admin_model_1.default.create({
             fullName,
             email,

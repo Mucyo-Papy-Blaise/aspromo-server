@@ -8,23 +8,18 @@ import applicant from "../models/applicant.model";
 class adminController {
   static adminRegistration = async (req: Request, res: Response) => {
     try {
-      const { fullName, image, email, password } = req.body;
+      const { fullName, image,email, password } = req.body;
+      // Only create if not existing
+      const existing = await admins.findOne({email})
       await admins.create({
         fullName,
         email,
         image: image.url,
         password: await bcrypt.hash(password, 10),
       });
-
-      const existing = await admins.findOne({email})
-
-      if(existing){
-        res.status(400).json({message:"Email Already exisisting!"})
-      }
-
-      res.status(201).json({ message: "Registration succesfully!" });
+      res.status(201).json({ message: "Registration successfully!" });
     } catch (error: any) {
-        res.status(500).json({message:"Failed to Register!", error:error.message})
+      res.status(500).json({ message: "Failed to Register!", error: error.message });
     }
   };
 
@@ -35,13 +30,14 @@ class adminController {
 
       if(!user){
         res.status(404).json({message:"Invalid Credentials"})
-        return
+        return;
       }
 
       const isMatch = await bcrypt.compare(password, user.password!)
 
       if(!isMatch){
         res.status(500).json({message:"Invalid Password"})
+        return;
       }
 
       const token  = jwt.sign({id:user._id},process.env.JWT_SECRET!,{expiresIn: '7d'})
@@ -67,11 +63,12 @@ class adminController {
 
       if(!token){
         res.status(404).json({message:"No token Provided"})
+        return;
       }
 
       if(!loggedUser){
         res.status(404).json({message:"User not found"})
-        return
+        return;
       }
       res.status(200).json({user:loggedUser})
       } catch (error: any) {

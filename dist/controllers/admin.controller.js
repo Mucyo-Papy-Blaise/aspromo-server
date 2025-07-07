@@ -22,17 +22,15 @@ _a = adminController;
 adminController.adminRegistration = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { fullName, image, email, password } = req.body;
+        // Only create if not existing
+        const existing = yield admin_model_1.default.findOne({ email });
         yield admin_model_1.default.create({
             fullName,
             email,
             image: image.url,
             password: yield bcrypt_1.default.hash(password, 10),
         });
-        const existing = yield admin_model_1.default.findOne({ email });
-        if (existing) {
-            res.status(400).json({ message: "Email Already exisisting!" });
-        }
-        res.status(201).json({ message: "Registration succesfully!" });
+        res.status(201).json({ message: "Registration successfully!" });
     }
     catch (error) {
         res.status(500).json({ message: "Failed to Register!", error: error.message });
@@ -49,6 +47,7 @@ adminController.adminLogin = (req, res) => __awaiter(void 0, void 0, void 0, fun
         const isMatch = yield bcrypt_1.default.compare(password, user.password);
         if (!isMatch) {
             res.status(500).json({ message: "Invalid Password" });
+            return;
         }
         const token = jsonwebtoken_1.default.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
         res.status(200).json({
@@ -72,6 +71,7 @@ adminController.getLoggedInAdmin = (req, res) => __awaiter(void 0, void 0, void 
         const loggedUser = yield admin_model_1.default.findById(user.id);
         if (!token) {
             res.status(404).json({ message: "No token Provided" });
+            return;
         }
         if (!loggedUser) {
             res.status(404).json({ message: "User not found" });

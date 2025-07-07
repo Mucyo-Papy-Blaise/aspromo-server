@@ -13,7 +13,7 @@ import { startReminderCron } from './cron/reminder.Cron';
 
 startReminderCron()
 
-const app = express()
+const app = express() 
 app.use(express.json())
 
 app.use(cors({
@@ -32,7 +32,7 @@ const PORT = env.port
 app.listen(PORT, async()=>{
     try {
         await connectdb()
-        console.log(`Server is Running on Port ${PORT}`)
+        console.log(`Server is Running on Port ${PORT}`) 
     } catch (error) {
        console.log('Error in server running', error) 
     }

@@ -17,7 +17,7 @@ const app = express()
 app.use(express.json())
 
 app.use(cors({
-    origin: ['http://localhost:3000',"http://localhost:3001","https://aspromo-fn.onrender.com"],
+    origin: ['http://localhost:3000',"http://localhost:3001","https://aspromo-fn.onrender.com","https://aspromo-admin-pages.onrender.com"],
     methods:["POST","GET","PUT","PATCH","DELETE","OPTIONS"]
 }))
 
